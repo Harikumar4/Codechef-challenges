@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML API Test</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>HTML API Test Interface</h1>
+
+    <!-- Generate HTML Form -->
+    <form id="generateForm">
+        <h2>Generate HTML</h2>
+        <textarea id="generateTemplate" placeholder="Enter HTML template"></textarea>
+        <textarea id="generateContent" placeholder="Enter content to insert"></textarea>
+        <button type="button" onclick="generateHtml()">Generate HTML</button>
+    </form>
+
+    <div id="generateResult"></div> <!-- Separate result section for generate HTML -->
+
+    <!-- Modify HTML Form -->
+    <form id="modifyForm">
+        <h2>Modify HTML</h2>
+        <textarea id="modifyHtml" placeholder="Enter HTML to modify"></textarea>
+        <textarea id="modifyInstructions" placeholder="Enter modification instructions"></textarea>
+        <button type="button" onclick="modifyHtml()">Modify HTML</button>
+    </form>
+
+    <div id="modifyResult"></div> <!-- Separate result section for modify HTML -->
+
+    <!-- Script Section -->
+    <script>
+        async function generateHtml() {
+            const template = document.getElementById('generateTemplate').value;
+            const content = document.getElementById('generateContent').value;
+
+            try {
+                const response = await fetch('/generate-html', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ template, content })
+                });
+
+                if (!response.ok) throw new Error('Failed to generate HTML');
+
+                const data = await response.json();
+                document.getElementById('generateResult').textContent = data.generatedHtml;
+            } catch (error) {
+                document.getElementById('generateResult').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function modifyHtml() {
+            const html = document.getElementById('modifyHtml').value;
+            const instructions = document.getElementById('modifyInstructions').value;
+
+            try {
+                const response = await fetch('/modify-html', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ html, instructions })
+                });
+
+                if (!response.ok) throw new Error('Failed to modify HTML');
+
+                const data = await response.json();
+                document.getElementById('modifyResult').textContent = data.modifiedHtml;
+            } catch (error) {
+                document.getElementById('modifyResult').textContent = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
